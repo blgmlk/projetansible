@@ -1,0 +1,3 @@
+ansible_host: 192.168.111.137
+ansible_user: malikablg
+ansible_connection: ssh

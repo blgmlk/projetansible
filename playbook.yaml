@@ -1,0 +1,21 @@
+---
+- name: Installation des services
+  hosts: servers
+
+  vars_files:
+    - files/secret/credentials.yaml
+
+  remote_user: malikablg
+  become: yes
+
+  tasks:
+  - name: 1. Install apache
+    apt: name=apache2 state=present
+
+  - name: 2. Install PHP module for Apache
+    apt: name=libapache2-mod-php5 state=present
+
+  - name: 3. start Apache
+    service: name=apache2 state=running enabled=yes
+
+
