@@ -1,21 +1,99 @@
 ---
-- name: Installation des services
+- name: Mise à Jour du cache
   hosts: servers
-
   vars_files:
     - files/secret/credentials.yaml
-
-  remote_user: malikablg
+#  remote_user: malikablg
   become: yes
-
   tasks:
-  - name: 1. Install apache
-    apt: name=apache2 state=present
+  - name: 1. Update cache 
+    apt: 
+      update_cache: yes
+  
+- name: 2. Install LAMP (Apache, Php et MySql) sur malikapache 
+  hosts: malikapache
+  vars_files:
+    - files/secret/credentials.yaml  
+  become: yes
+  tasks:
+  - name: Installation des paquets de LAMP
+    tags: debug
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - apache2
+      - php
+      - libapache2-mod-php
+      - mysql-server
+      - php-mysql
+      - wget
 
-  - name: 2. Install PHP module for Apache
-    apt: name=libapache2-mod-php5 state=present
+  - name: Démarrage de apache mysql et activation au démarrage 
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    with_items:
+      - apache2
+      - mysql
+  
+#############################################################################
+- name: 2. Installation de haproxy et ftp sur malikaftp
+  hosts: malikaftp
+  vars_files:
+    - files/secret/credentials.yaml  
+  become: yes
+  tasks:
+  - name: installation de loadBalanacer haproxy
+    tags: prox
+    apt:
+      name: haproxy
+      state: present
 
-  - name: 3. start Apache
-    service: name=apache2 state=running enabled=yes
+  - name: Copy the config file to remote system
+    template:
+      src: "haproxy.cfg"
+      dest: "/etc/haproxy/haproxy.cfg"
 
+  - name: instalation de vsftpd pour ftp
+    tags: verif
+    apt:
+      name: vsftpd
+      state: present
+
+  - name: Create home directory for ftp users
+    file: 
+      path: /home/dredirect
+      state: directory
+      mode: 0755
+
+  - name: modifier la configuration de ftp 
+    lineinfile:
+      dest: "/etc/vsftpd.conf"
+      backup: yes
+      backrefs: yes
+      state: present
+      regex: "{{ item.regex }}"
+      line: "{{ item.line }}"
+    with_items: 
+      - { regex: anonymous_enable= NO, line: anonymous_enable=YES}
+      - { regex: listen=NO, line: listen=YES }
+      - { regex: listen_ipv6=YES, line: listen_ipv6=NO }
+      - { regex: write_enable, line: write_enable=YES }
+  
+  - name: Démarrer haproxy et vsftpd
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    with_items:
+      - haproxy
+      - vsftpd
+  
+  
+  
+
+  
+ 
 
