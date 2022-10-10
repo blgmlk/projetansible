@@ -1,5 +1,5 @@
 ---
-- name: Mise à Jour du cache
+- name: mise à jour du cache et installation des services
   hosts: servers
   vars_files:
     - files/secret/credentials.yaml
@@ -39,7 +39,7 @@
       - mysql
   
 #############################################################################
-- name: 2. Installation de haproxy et ftp sur malikaftp
+- name: 3. Installation de haproxy et ftp sur malikaftp
   hosts: malikaftp
   vars_files:
     - files/secret/credentials.yaml  
@@ -53,8 +53,11 @@
 
   - name: Copy the config file to remote system
     template:
-      src: "haproxy.cfg"
+      src: "templates/haproxy.cfg"
       dest: "/etc/haproxy/haproxy.cfg"
+      #backup: yes
+    notify: 
+      - Demarrer haproxy
 
   - name: instalation de vsftpd pour ftp
     tags: verif
@@ -82,14 +85,18 @@
       - { regex: listen_ipv6=YES, line: listen_ipv6=NO }
       - { regex: write_enable, line: write_enable=YES }
   
-  - name: Démarrer haproxy et vsftpd
+  - name: Demarrer vsftpd
     service:
-      name: "{{ item }}"
+      name: vsftpd
       state: started
       enabled: yes
     with_items:
-      - haproxy
-      - vsftpd
+      
+  handlers:
+  - name: Demarrer haproxy
+    service: 
+      name: haproxy
+      state: restarted 
   
   
   
