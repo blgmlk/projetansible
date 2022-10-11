@@ -1,0 +1,5 @@
+---
+# vars file for role_check_etat_apres_start_vmftp
+enable_services:
+  - haproxy
+  - vsftpd

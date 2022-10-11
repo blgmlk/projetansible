@@ -1,0 +1,5 @@
+---
+# vars file for role_check_etat_avant_vmftp
+disable_services:
+  - haproxy
+  - vsftpd      

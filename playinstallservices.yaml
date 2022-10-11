@@ -90,7 +90,7 @@
       name: vsftpd
       state: started
       enabled: yes
-    with_items:
+  
       
   handlers:
   - name: Demarrer haproxy

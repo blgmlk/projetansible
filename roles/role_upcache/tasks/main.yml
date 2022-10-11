@@ -1,0 +1,5 @@
+---
+# tasks file for role_upcache
+- name: Update cache 
+  apt: 
+    update_cache: yes

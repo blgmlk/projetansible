@@ -1,0 +1,15 @@
+---
+# tasks file for role_installation_haproxy
+- name: installation de loadBalanacer haproxy
+  tags: prox
+  apt:
+    name: haproxy
+    state: present
+
+- name: Copy the config file to remote system
+  template:
+    src: "haproxy.cfg"
+    dest: "/etc/haproxy/haproxy.cfg"
+    #backup: yes
+  notify: 
+    - Demarrer haproxy

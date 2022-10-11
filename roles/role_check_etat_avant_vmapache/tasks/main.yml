@@ -1,0 +1,26 @@
+---
+# tasks file for role_check_etat_avant
+- name: check l'état des services installés
+  tags: result
+  service_facts:
+
+- name: afficher les services selectionnés
+  debug:
+    var: ansible_facts.services[serviceToDisplay]
+  loop: "{{ disable_services}}"
+  loop_control:
+    loop_var: serviceToDisplay
+
+- name: Stop and Disable service if it is running or enabled
+  tags: result
+  systemd:
+    name: "{{ ansible_facts.services[serviceToDisable]['name'] }}"
+    enabled: no
+    state: stopped
+  when:
+    - serviceToDisable is defined
+    - ansible_facts.services[serviceToDisable]['state'] == 'running'
+  loop: "{{ disable_services }}"
+  loop_control:
+    loop_var: serviceToDisable
+ 

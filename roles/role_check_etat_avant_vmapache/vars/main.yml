@@ -1,0 +1,5 @@
+---
+# vars file for role_check_etat_avant
+disable_services:
+  - apache2
+  - mysql

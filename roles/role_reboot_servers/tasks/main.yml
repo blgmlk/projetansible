@@ -1,0 +1,17 @@
+---
+# tasks file for role_reboot_servers
+- name: Check the uptime
+  shell: uptime
+  register: UPTIME_PRE_REBOOT
+- name: test
+  debug: msg="{{UPTIME_PRE_REBOOT.stdout}}"
+  
+- name: Reboot the machine (Wait for 5 min)
+  reboot:
+    reboot_timeout: 300
+
+- name: Check the uptime after reboot
+  shell: uptime
+  register: UPTIME_POST_REBOOT
+- name: test2
+  debug: msg="{{UPTIME_POST_REBOOT.stdout}}"

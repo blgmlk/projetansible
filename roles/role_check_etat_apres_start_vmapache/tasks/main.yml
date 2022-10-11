@@ -1,0 +1,28 @@
+---
+# tasks file for role_check_etat_apres_start_vmapache
+- name: check l'état des services installés
+  tags: refaire
+  service_facts:
+
+- name: afficher les services selectionnés
+  tags: refaire
+  debug:
+    var: ansible_facts.services[serviceToDisplay]
+  loop: "{{ enable_services}}"
+  loop_control:
+    loop_var: serviceToDisplay
+
+
+- name: Start and Enable service if it is stopped or Disabled
+  tags: refaire
+  systemd:
+    name: "{{ ansible_facts.services[serviceToEnable]['name'] }}"
+    enabled: yes
+    state: started
+  when:
+    - serviceToEnable is defined
+    - ansible_facts.services[serviceToEnable]['state'] == 'stopped'
+  loop: "{{ enable_services }}"
+  loop_control:
+    loop_var: serviceToEnable
+  

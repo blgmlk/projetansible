@@ -1,0 +1,23 @@
+---
+# tasks file for role_installation_lamp
+- name: Installation des paquets de LAMP
+  tags: debug
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apache2
+    - php
+    - libapache2-mod-php
+    - mysql-server
+    - php-mysql
+    - wget
+
+- name: Démarrage de apache mysql et activation au démarrage 
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - apache2
+    - mysql

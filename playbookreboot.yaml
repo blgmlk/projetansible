@@ -1,0 +1,43 @@
+---
+- hosts: servers
+  vars_files:
+    - files/secret/credentials.yaml
+  become: yes
+  roles:
+    - role_upcache
+
+- hosts: malikapache
+  vars_files:
+    - files/secret/credentials.yaml
+  become: yes
+  roles:
+    - role_check_etat_avant_vmapache
+  
+- hosts: malikaftp
+  vars_files:
+    - files/secret/credentials.yaml
+  become: yes
+  roles:
+    - role_check_etat_avant_vmftp
+
+- hosts: servers
+ # gather_facts: no
+  vars_files:
+    - files/secret/credentials.yaml
+  become: yes
+  roles:
+    - role_reboot_servers
+
+- hosts: malikapache
+  vars_files:
+    - files/secret/credentials.yaml
+  become: yes
+  roles:
+    - role_check_etat_apres_start_vmapache
+  
+- hosts: malikaftp
+  vars_files:
+    - files/secret/credentials.yaml
+  become: yes
+  roles:
+    - role_check_etat_apres_start_vmftp

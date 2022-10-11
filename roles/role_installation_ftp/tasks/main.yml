@@ -1,0 +1,33 @@
+---
+# tasks file for role_installation_ftp
+- name: instalation de vsftpd pour ftp
+  tags: verif
+  apt:
+    name: vsftpd
+    state: present
+
+- name: Create home directory for ftp users
+  file: 
+    path: /home/dredirect
+    state: directory
+    mode: 0755
+
+- name: modifier la configuration de ftp 
+  lineinfile:
+    dest: "/etc/vsftpd.conf"
+    backup: yes
+    backrefs: yes
+    state: present
+    regex: "{{ item.regex }}"
+    line: "{{ item.line }}"
+  with_items: 
+    - { regex: anonymous_enable= NO, line: anonymous_enable=YES}
+    - { regex: listen=NO, line: listen=YES }
+    - { regex: listen_ipv6=YES, line: listen_ipv6=NO }
+    - { regex: write_enable, line: write_enable=YES }
+
+- name: Demarrer vsftpd
+  service:
+    name: vsftpd
+    state: started
+    enabled: yes

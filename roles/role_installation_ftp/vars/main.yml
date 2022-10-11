@@ -1,0 +1,7 @@
+# ---
+# # vars file for role_installation_ftp
+# remplacer: 
+#   - regex: anonymous_enable= NO, line: anonymous_enable=YES
+#   - listen=NO, listen=YES 
+#   - isten_ipv6=YES, listen_ipv6=NO
+#   - write_enable,  write_enable=YES
