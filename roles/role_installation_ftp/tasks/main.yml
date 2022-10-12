@@ -13,6 +13,7 @@
     mode: 0755
 
 - name: modifier la configuration de ftp 
+  tags: titi
   lineinfile:
     dest: "/etc/vsftpd.conf"
     backup: yes
@@ -20,11 +21,8 @@
     state: present
     regex: "{{ item.regex }}"
     line: "{{ item.line }}"
-  with_items: 
-    - { regex: anonymous_enable= NO, line: anonymous_enable=YES}
-    - { regex: listen=NO, line: listen=YES }
-    - { regex: listen_ipv6=YES, line: listen_ipv6=NO }
-    - { regex: write_enable, line: write_enable=YES }
+  with_items: "{{ ftp_config }}"
+
 
 - name: Demarrer vsftpd
   service:

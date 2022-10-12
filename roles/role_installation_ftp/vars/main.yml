@@ -5,3 +5,8 @@
 #   - listen=NO, listen=YES 
 #   - isten_ipv6=YES, listen_ipv6=NO
 #   - write_enable,  write_enable=YES
+ftp_config:
+  - { regex: anonymous_enable= NO, line: anonymous_enable=YES}
+  - { regex: listen=NO, line: listen=YES }
+  - { regex: listen_ipv6=YES, line: listen_ipv6=NO }
+  - { regex: write_enable, line: write_enable=YES }

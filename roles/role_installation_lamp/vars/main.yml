@@ -1,2 +1,13 @@
 ---
 # vars file for role_installation_lamp
+list_services:
+  - apache2
+  - mysql
+
+list_packages:
+  - apache2
+  - php
+  - libapache2-mod-php
+  - mysql-server
+  - php-mysql
+  - wget
